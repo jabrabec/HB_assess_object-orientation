@@ -117,23 +117,72 @@ class Exam(Question):
         """Administers exam questions and returns user's score"""
 
         score = float(0.0)
+        count = 0
         for question in self.questions:
-            reply = Question.ask_and_evaluate(question)
-            if reply is True:
+            count += 1
+            if Question.ask_and_evaluate(question):
                 score += 1
-        print score
-        return score
+        print score / count * 100, "%"
+        return score / count * 100
 
 
-## testing purposes, to be removed later
-exam = Exam('midterm')
-question = Question('What is the method for adding an element to a set?', '.add()')
-exam.add_question('What is the method for adding an element to a set?', '.add()')
-exam.add_question('what is my favorite color?', 'purple')
-a_student = Student("jen", "b", "123 sesame st")
+class Quiz(Exam):
+    """A quiz"""
+
+    def administer(self):
+        """Administers quiz questions and returns user's pass/fail status"""
+
+        quiz_score = super(Quiz, self).administer()
+        # if quiz_score >= 0.5:
+        #     Student.quiz_status = "pass"
+        # else:
+        #     Student.quiz_status = "fail"
 
 
 def take_test(exam, student):
-    """something"""
+    """Administers a test and tracks student's score.
+
+    Calls .adminster() method on an existing Exam() object, and assigns a new
+    total score result as an instance attribute to an existing Student() object.
+    """
 
     student.score = exam.administer()
+
+
+def example():
+    """Example setup to create and take an exam.
+
+    Initializes new Exam() object, adds 3 questions to it with their associated
+    correct answers. Initializes a Student() object. Calls take_test function on
+    the new exam and new student, requiring user input for each questions, and
+    prints the score results to the console.
+
+    ***NOTE*** the take_test function when called directly in the console does
+    successfully add a student.score attribute value to an existing Student()
+    object. Because this example is called entirely within a function, student
+    attributes will not be saved once the example function completes.
+    """
+
+    exam = Exam('midterm')
+    exam.add_question('What is the method for adding an element to a set?', '.add()')
+    exam.add_question('what is my favorite color?', 'purple')
+    exam.add_question('what is 2 + 2?', '4')
+
+    a_student = Student("jen", "b", "123 sesame st")
+
+    take_test(exam, a_student)
+
+# example()
+
+## objects instantiated outside of function for testing purposes
+exam = Exam('midterm')
+exam.add_question('What is the method for adding an element to a set?', '.add()')
+exam.add_question('what is my favorite color?', 'purple')
+exam.add_question('what is 2 + 2?', '4')
+
+a_student = Student("jen", "b", "123 sesame st")
+
+quiz = Exam('quiz1')
+quiz.add_question('What is the method for adding an element to a set?', '.add()')
+quiz.add_question('what is my favorite color?', 'purple')
+quiz.add_question('what is 2 + 2?', '4')
