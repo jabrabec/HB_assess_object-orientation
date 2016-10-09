@@ -122,9 +122,18 @@ class Exam(Question):
             if reply is True:
                 score += 1
         print score
+        return score
 
 
 ## testing purposes, to be removed later
 exam = Exam('midterm')
 question = Question('What is the method for adding an element to a set?', '.add()')
 exam.add_question('What is the method for adding an element to a set?', '.add()')
+exam.add_question('what is my favorite color?', 'purple')
+a_student = Student("jen", "b", "123 sesame st")
+
+
+def take_test(exam, student):
+    """something"""
+
+    student.score = exam.administer()
