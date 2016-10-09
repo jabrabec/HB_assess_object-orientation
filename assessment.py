@@ -102,6 +102,8 @@ class Question(object):
 class Exam(Question):
     """An exam"""
 
+    test_type = 'exam'
+
     def __init__(self, name):
         """Initialize an exam"""
 
@@ -116,7 +118,7 @@ class Exam(Question):
     def administer(self):
         """Administers exam questions and returns user's score"""
 
-        score = float(0.0)
+        score = 0.0
         count = 0
         for question in self.questions:
             count += 1
@@ -129,14 +131,18 @@ class Exam(Question):
 class Quiz(Exam):
     """A quiz"""
 
+    test_type = 'quiz'
+
     def administer(self):
         """Administers quiz questions and returns user's pass/fail status"""
 
         quiz_score = super(Quiz, self).administer()
-        # if quiz_score >= 0.5:
-        #     Student.quiz_status = "pass"
-        # else:
-        #     Student.quiz_status = "fail"
+        if quiz_score >= 50:
+            print "Pass! :)"
+            return "pass"
+        else:
+            print "Fail! :("
+            return "fail"
 
 
 def take_test(exam, student):
@@ -146,7 +152,10 @@ def take_test(exam, student):
     total score result as an instance attribute to an existing Student() object.
     """
 
-    student.score = exam.administer()
+    if type(exam) is Quiz:
+        student.quiz_score = exam.administer()
+    elif type(exam) is Exam:
+        student.exam_score = exam.administer()
 
 
 def example():
@@ -163,26 +172,67 @@ def example():
     attributes will not be saved once the example function completes.
     """
 
-    exam = Exam('midterm')
-    exam.add_question('What is the method for adding an element to a set?', '.add()')
-    exam.add_question('what is my favorite color?', 'purple')
-    exam.add_question('what is 2 + 2?', '4')
+    exam1 = Exam('midterm')
+    exam1.add_question('What is the method for adding an element to a set?', '.add()')
+    exam1.add_question('what is my favorite color?', 'purple')
+    exam1.add_question('what is 2 + 2?', '4')
 
     a_student = Student("jen", "b", "123 sesame st")
 
-    take_test(exam, a_student)
+    take_test(exam1, a_student)
 
-# example()
+example()
 
-## objects instantiated outside of function for testing purposes
-exam = Exam('midterm')
-exam.add_question('What is the method for adding an element to a set?', '.add()')
-exam.add_question('what is my favorite color?', 'purple')
-exam.add_question('what is 2 + 2?', '4')
+
+## objects instantiated outside of example() function for interactive console
+## testing purposes:
+exam1 = Exam('midterm')
+exam1.add_question('What is the method for adding an element to a set?', '.add()')
+exam1.add_question('what is my favorite color?', 'purple')
+exam1.add_question('what is 2 + 2?', '4')
 
 a_student = Student("jen", "b", "123 sesame st")
 
-quiz = Exam('quiz1')
-quiz.add_question('What is the method for adding an element to a set?', '.add()')
-quiz.add_question('what is my favorite color?', 'purple')
-quiz.add_question('what is 2 + 2?', '4')
+quiz1 = Quiz('quiz1')
+quiz1.add_question('What are three benefits of OO?', 'abstraction, encapsulation, and polymorphism')
+quiz1.add_question('How many pets do I have?', '1')
+quiz1.add_question('Raven?', 'CAWW!')
+
+"""Example output (not in a DocString test because I don't know how to simulate
+    raw input):
+
+    >>> type(quiz1)
+    <class '__main__.Quiz'>
+    >>> type(exam1)
+    <class '__main__.Exam'>
+    >>> len(quiz1.questions)
+    3
+    >>> len(exam1.questions)
+    3
+    >>> quiz1.questions[2].answer
+    'CAWW!'
+    >>> exam1.questions[1].question
+    'what is my favorite color?'
+    >>> take_test(quiz1, a_student)
+    What are three benefits of OO? > abstraction, encapsulation, and polymorphism
+    How many pets do I have? > 1
+    Raven? > CAWW!
+    100.0 %
+    Pass! :)
+    >>> a_student.quiz_score
+    'pass'
+    >>> a_student.exam_score
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    AttributeError: 'Student' object has no attribute 'exam_score'
+    >>> take_test(exam1, a_student)
+    What is the method for adding an element to a set? > .add()
+    what is my favorite color? > purple
+    what is 2 + 2? > 3
+    66.6666666667 %
+    >>> a_student.exam_score
+    66.66666666666666
+    >>> a_student.quiz_score
+    'pass'
+
+"""
